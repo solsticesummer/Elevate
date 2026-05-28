@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Circadia — Travel far. Sleep well.</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    /* Light sage + forest-green theme to match the Team Intel presentation */
+    --navy: #E8EAE3;          /* page background (sage) */
+    --midnight: #E1E4DA;      /* alt section background */
+    --deep: #F3F5EF;          /* card surface (lighter) */
+    --surface: #DADDD0;       /* nested surface */
+    --amber: #3F7A2E;         /* primary accent now green */
+    --amber-light: #4F9639;   /* lighter green for hover */
+    --amber-dim: rgba(63,122,46,0.12);
+    --teal: #2E7D32;          /* secondary green accent */
+    --teal-dim: rgba(46,125,50,0.12);
+    --white: #16341B;         /* primary text now dark forest green */
+    --white-dim: rgba(22,52,27,0.62);
+    --white-faint: rgba(22,52,27,0.06);
+    --border: rgba(22,52,27,0.14);
+    --border-hover: rgba(63,122,46,0.45);
+    --gold: #E6B23A;          /* yellow star accent from the deck */
+    --serif: 'Playfair Display', Georgia, serif;
+    --sans: 'DM Sans', system-ui, sans-serif;
+    --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--navy);
+    color: var(--white);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 1.25rem 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(232,234,227,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 0.5px solid var(--border);
+    transition: var(--transition);
+  }
+  .nav-logo {
+    font-family: var(--serif);
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--white);
+    text-decoration: none;
+    letter-spacing: 0.02em;
+  }
+  .nav-logo span { color: var(--amber); }
+  .nav-links {
+    display: flex; align-items: center; gap: 2rem;
+    list-style: none;
+  }
+  .nav-links a {
+    color: var(--white-dim);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 400;
+    transition: color var(--transition);
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-cta {
+    background: var(--amber);
+    color: #F3F5EF !important;
+    padding: 0.5rem 1.25rem;
+    border-radius: 100px;
+    font-weight: 500 !important;
+    font-size: 0.875rem !important;
+  }
+  .nav-cta:hover { background: var(--amber-light) !important; color: #F3F5EF !important; }
+  .hamburger {
+    display: none;
+    flex-direction: column; gap: 5px; cursor: pointer;
+    background: none; border: none; padding: 4px;
+  }
+  .hamburger span {
+    display: block; width: 22px; height: 1.5px;
+    background: var(--white); border-radius: 2px;
+    transition: var(--transition);
+  }
+  .mobile-menu {
+    display: none;
+    position: fixed; top: 64px; left: 0; right: 0; z-index: 99;
+    background: var(--midnight);
+    border-bottom: 0.5px solid var(--border);
+    padding: 1.5rem 2rem;
+    flex-direction: column; gap: 1.25rem;
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a {
+    color: var(--white-dim); text-decoration: none;
+    font-size: 1rem; font-weight: 400;
+    transition: color var(--transition);
+  }
+  .mobile-menu a:hover { color: var(--white); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    padding: 8rem 2rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    overflow: hidden;
+  }
+  .star {
+    position: absolute;
+    background: #3F7A2E;
+    border-radius: 50%;
+    animation: twinkle var(--dur, 3s) ease-in-out infinite;
+    animation-delay: var(--delay, 0s);
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.05; transform: scale(1); }
+    50% { opacity: 0.35; transform: scale(1.3); }
+  }
+  .moon-arc {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(63,122,46,0.18);
+    animation: pulse-ring 8s ease-in-out infinite;
+  }
+  @keyframes pulse-ring {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.02); }
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 780px; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--amber-dim);
+    color: var(--amber);
+    border: 0.5px solid rgba(245,166,35,0.3);
+    border-radius: 100px;
+    padding: 0.35rem 1rem;
+    font-size: 0.8rem; font-weight: 500;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(2.8rem, 7vw, 5.5rem);
+    font-weight: 500;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+    color: var(--white);
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--amber);
+  }
+  .hero-sub {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    color: var(--white-dim);
+    max-width: 560px;
+    margin: 0 auto 2.5rem;
+    font-weight: 300;
+    line-height: 1.8;
+  }
+  .hero-actions {
+    display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+  }
+  .btn-primary {
+    background: var(--amber);
+    color: #F3F5EF;
+    padding: 0.85rem 2rem;
+    border-radius: 100px;
+    font-size: 0.95rem; font-weight: 500;
+    text-decoration: none; border: none; cursor: pointer;
+    transition: var(--transition);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-primary:hover { background: var(--amber-light); transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--white);
+    padding: 0.85rem 2rem;
+    border-radius: 100px;
+    font-size: 0.95rem; font-weight: 400;
+    text-decoration: none;
+    border: 0.5px solid var(--border);
+    cursor: pointer;
+    transition: var(--transition);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-secondary:hover { border-color: rgba(22,52,27,0.3); background: var(--white-faint); }
+  .hero-stats {
+    display: flex; gap: 3rem; justify-content: center; flex-wrap: wrap;
+    margin-top: 4rem;
+    padding-top: 3rem;
+    border-top: 0.5px solid var(--border);
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: var(--serif);
+    font-size: 2rem; font-weight: 500;
+    color: var(--amber);
+    display: block;
+  }
+  .stat-label {
+    font-size: 0.8rem; color: var(--white-dim);
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+
+  /* SECTIONS */
+  section { padding: 6rem 2rem; }
+  .container { max-width: 1100px; margin: 0 auto; }
+  .section-label {
+    font-size: 0.75rem; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--amber);
+    margin-bottom: 0.75rem;
+  }
+  .section-title {
+    font-family: var(--serif);
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 500;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    color: var(--white);
+  }
+  .section-sub {
+    font-size: 1rem; color: var(--white-dim);
+    max-width: 520px; line-height: 1.8;
+  }
+
+  /* HOW IT WORKS */
+  #how { background: var(--midnight); }
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5px;
+    margin-top: 3.5rem;
+    border: 0.5px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .step {
+    background: var(--deep);
+    padding: 2rem 1.75rem;
+    position: relative;
+    transition: background var(--transition);
+  }
+  .step:hover { background: var(--surface); }
+  .step-num {
+    font-family: var(--serif);
+    font-size: 3rem; font-weight: 400;
+    color: var(--amber-dim);
+    color: rgba(245,166,35,0.2);
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+  .step-icon {
+    width: 44px; height: 44px;
+    background: var(--amber-dim);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+  }
+  .step h3 {
+    font-size: 1rem; font-weight: 500;
+    color: var(--white);
+    margin-bottom: 0.5rem;
+  }
+  .step p { font-size: 0.875rem; color: var(--white-dim); line-height: 1.7; }
+
+  /* FEATURES */
+  #features { background: var(--navy); }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-top: 3.5rem;
+  }
+  .feature-card {
+    background: var(--midnight);
+    border: 0.5px solid var(--border);
+    border-radius: 16px;
+    padding: 1.75rem;
+    transition: border-color var(--transition), background var(--transition);
+    cursor: default;
+  }
+  .feature-card:hover {
+    border-color: var(--border-hover);
+    background: var(--deep);
+  }
+  .feature-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+  }
+  .feature-icon.amber { background: var(--amber-dim); }
+  .feature-icon.teal { background: var(--teal-dim); }
+  .feature-card h3 { font-size: 1rem; font-weight: 500; margin-bottom: 0.5rem; }
+  .feature-card p { font-size: 0.875rem; color: var(--white-dim); line-height: 1.7; }
+  .feature-tag {
+    display: inline-block; margin-top: 0.75rem;
+    font-size: 0.7rem; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    padding: 0.25rem 0.6rem;
+    border-radius: 100px;
+    background: var(--teal-dim);
+    color: var(--teal);
+  }
+  .feature-tag.amber-tag { background: var(--amber-dim); color: var(--amber); }
+
+  /* INTERACTIVE DEMO */
+  #demo { background: var(--midnight); }
+  .demo-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: center;
+    margin-top: 3rem;
+  }
+  .demo-form { display: flex; flex-direction: column; gap: 1rem; }
+  .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+  .form-group label {
+    font-size: 0.8rem; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--white-dim);
+  }
+  .form-group input,
+  .form-group select {
+    background: var(--deep);
+    border: 0.5px solid var(--border);
+    border-radius: 10px;
+    color: var(--white);
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    font-family: var(--sans);
+    outline: none;
+    transition: border-color var(--transition);
+    width: 100%;
+    appearance: none;
+  }
+  .form-group input:focus,
+  .form-group select:focus { border-color: var(--amber); }
+  .form-group select option { background: var(--deep); }
+  .demo-result {
+    background: var(--deep);
+    border: 0.5px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    min-height: 380px;
+    display: flex; flex-direction: column;
+  }
+  .result-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .result-header h3 { font-size: 0.9rem; font-weight: 500; }
+  .live-badge {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 0.7rem; color: var(--teal);
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .live-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--teal);
+    animation: blink 2s ease-in-out infinite;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  .schedule-list { display: flex; flex-direction: column; gap: 0.75rem; flex: 1; }
+  .schedule-item {
+    display: flex; align-items: flex-start; gap: 0.75rem;
+    padding: 0.75rem;
+    background: var(--surface);
+    border-radius: 10px;
+    border-left: 2px solid transparent;
+    transition: var(--transition);
+  }
+  .schedule-item.sleep { border-left-color: var(--teal); }
+  .schedule-item.meal { border-left-color: var(--amber); }
+  .schedule-item.light { border-left-color: #a78bfa; }
+  .schedule-time {
+    font-size: 0.75rem; font-weight: 500;
+    color: var(--white-dim); min-width: 52px;
+    margin-top: 2px;
+  }
+  .schedule-desc { font-size: 0.85rem; color: var(--white); line-height: 1.5; }
+  .schedule-why {
+    font-size: 0.75rem; color: var(--white-dim);
+    margin-top: 2px; font-style: italic;
+  }
+  .result-empty {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 0.75rem; text-align: center;
+  }
+  .result-empty svg { opacity: 0.2; }
+  .result-empty p { font-size: 0.875rem; color: var(--white-dim); }
+
+  /* PRICING */
+  #pricing { background: var(--navy); }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-top: 3.5rem;
+    align-items: start;
+  }
+  .pricing-card {
+    background: var(--midnight);
+    border: 0.5px solid var(--border);
+    border-radius: 20px;
+    padding: 2rem;
+    position: relative;
+    transition: var(--transition);
+  }
+  .pricing-card.featured {
+    border: 1.5px solid var(--amber);
+    background: var(--deep);
+  }
+  .pricing-badge {
+    position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+    background: var(--amber);
+    color: #F3F5EF;
+    font-size: 0.7rem; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    padding: 0.25rem 0.75rem;
+    border-radius: 100px;
+    white-space: nowrap;
+  }
+  .plan-name {
+    font-size: 0.8rem; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--white-dim); margin-bottom: 0.5rem;
+  }
+  .plan-price {
+    font-family: var(--serif);
+    font-size: 2.5rem; font-weight: 500;
+    color: var(--white); line-height: 1;
+    margin-bottom: 0.25rem;
+  }
+  .plan-price sup { font-size: 1.2rem; vertical-align: top; margin-top: 0.4rem; }
+  .plan-price span { font-size: 0.9rem; font-weight: 400; color: var(--white-dim); }
+  .plan-desc {
+    font-size: 0.85rem; color: var(--white-dim);
+    margin: 0.75rem 0 1.5rem; line-height: 1.6;
+  }
+  .plan-features { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.75rem; }
+  .plan-features li {
+    display: flex; align-items: flex-start; gap: 0.5rem;
+    font-size: 0.875rem; color: var(--white-dim);
+  }
+  .plan-features li .check { color: var(--teal); font-size: 0.9rem; margin-top: 2px; flex-shrink: 0; }
+  .plan-features li .x { color: rgba(22,52,27,0.2); font-size: 0.9rem; margin-top: 2px; flex-shrink: 0; }
+  .plan-btn {
+    width: 100%;
+    padding: 0.85rem;
+    border-radius: 100px;
+    font-size: 0.9rem; font-weight: 500;
+    cursor: pointer; border: none;
+    transition: var(--transition);
+    font-family: var(--sans);
+  }
+  .plan-btn.primary { background: var(--amber); color: #F3F5EF; }
+  .plan-btn.primary:hover { background: var(--amber-light); }
+  .plan-btn.outline {
+    background: transparent;
+    color: var(--white);
+    border: 0.5px solid var(--border);
+  }
+  .plan-btn.outline:hover { border-color: rgba(22,52,27,0.3); background: var(--white-faint); }
+
+  /* TESTIMONIALS */
+  #testimonials { background: var(--midnight); }
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-top: 3.5rem;
+  }
+  .testimonial-card {
+    background: var(--deep);
+    border: 0.5px solid var(--border);
+    border-radius: 16px;
+    padding: 1.75rem;
+    transition: var(--transition);
+  }
+  .testimonial-card:hover { border-color: var(--border-hover); }
+  .stars { color: var(--amber); font-size: 0.85rem; margin-bottom: 1rem; letter-spacing: 2px; }
+  .testimonial-text {
+    font-size: 0.925rem; color: var(--white-dim);
+    line-height: 1.8; margin-bottom: 1.25rem;
+    font-style: italic;
+  }
+  .testimonial-author {
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .author-avatar {
+    width: 38px; height: 38px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.8rem; font-weight: 500;
+    flex-shrink: 0;
+  }
+  .author-name { font-size: 0.875rem; font-weight: 500; }
+  .author-role { font-size: 0.775rem; color: var(--white-dim); }
+
+  /* SCIENCE */
+  #science { background: var(--navy); }
+  .science-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: center;
+    margin-top: 3rem;
+  }
+  .science-facts { display: flex; flex-direction: column; gap: 1rem; }
+  .science-fact {
+    background: var(--midnight);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    display: flex; gap: 1rem; align-items: flex-start;
+  }
+  .fact-icon {
+    width: 36px; height: 36px; border-radius: 8px;
+    background: var(--teal-dim);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; flex-shrink: 0;
+  }
+  .fact-icon.amber { background: var(--amber-dim); }
+  .fact-content h4 { font-size: 0.875rem; font-weight: 500; margin-bottom: 0.25rem; }
+  .fact-content p { font-size: 0.8rem; color: var(--white-dim); line-height: 1.6; }
+  .science-visual {
+    background: var(--midnight);
+    border: 0.5px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+  }
+  .circadian-clock { position: relative; margin: 0 auto; width: 200px; height: 200px; }
+  .clock-svg { width: 100%; height: 100%; }
+
+  /* CTA */
+  #cta {
+    background: var(--midnight);
+    text-align: center;
+  }
+  .cta-inner {
+    max-width: 600px; margin: 0 auto;
+    background: var(--deep);
+    border: 0.5px solid var(--border);
+    border-radius: 24px;
+    padding: 4rem 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-inner::before {
+    content: '';
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 200px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--amber), transparent);
+  }
+  .cta-inner h2 {
+    font-family: var(--serif);
+    font-size: 2.2rem; font-weight: 500;
+    margin-bottom: 0.75rem;
+  }
+  .cta-inner p { color: var(--white-dim); margin-bottom: 2rem; }
+  .store-badges {
+    display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;
+    margin-top: 1.5rem;
+  }
+  .store-badge {
+    display: flex; align-items: center; gap: 0.5rem;
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: 10px;
+    padding: 0.6rem 1.25rem;
+    font-size: 0.8rem; color: var(--white-dim);
+    text-decoration: none;
+    transition: var(--transition);
+  }
+  .store-badge:hover { border-color: rgba(22,52,27,0.25); background: var(--deep); color: var(--white); }
+  .store-badge strong { display: block; font-weight: 500; color: var(--white); font-size: 0.875rem; }
+
+  /* FOOTER */
+  footer {
+    background: var(--navy);
+    padding: 3rem 2rem 2rem;
+    border-top: 0.5px solid var(--border);
+  }
+  .footer-inner {
+    max-width: 1100px; margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 3rem;
+  }
+  .footer-brand p {
+    font-size: 0.875rem; color: var(--white-dim);
+    margin-top: 0.75rem; max-width: 260px; line-height: 1.7;
+  }
+  .footer-col h4 {
+    font-size: 0.8rem; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--white-dim); margin-bottom: 1rem;
+  }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+  .footer-col a {
+    font-size: 0.875rem; color: rgba(22,52,27,0.5);
+    text-decoration: none; transition: color var(--transition);
+  }
+  .footer-col a:hover { color: var(--white); }
+  .footer-bottom {
+    max-width: 1100px; margin: 2rem auto 0;
+    padding-top: 1.5rem;
+    border-top: 0.5px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 0.5rem;
+  }
+  .footer-bottom p { font-size: 0.8rem; color: rgba(22,52,27,0.4); }
+
+  /* SCROLL ANIMATIONS */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    .demo-wrap { grid-template-columns: 1fr; }
+    .science-grid { grid-template-columns: 1fr; }
+    .footer-inner { grid-template-columns: 1fr 1fr; }
+    .hero-stats { gap: 2rem; }
+  }
+  @media (max-width: 480px) {
+    .footer-inner { grid-template-columns: 1fr; }
+    section { padding: 4rem 1.25rem; }
+    .cta-inner { padding: 2.5rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">Circa<span>dia</span></a>
+  <ul class="nav-links">
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#demo">Try it</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#cta" class="nav-cta">Download free</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#how" onclick="closeMobileMenu()">How it works</a>
+  <a href="#features" onclick="closeMobileMenu()">Features</a>
+  <a href="#demo" onclick="closeMobileMenu()">Try it</a>
+  <a href="#pricing" onclick="closeMobileMenu()">Pricing</a>
+  <a href="#cta" onclick="closeMobileMenu()" style="color: var(--amber);">Download free</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg" id="heroBg"></div>
+  <div class="hero-content">
+    <div class="hero-badge">✦ Free AI-powered sleep coaching</div>
+    <h1>Travel far.<br><em>Sleep well.</em></h1>
+    <p class="hero-sub">Circadia is your AI circadian rhythm coach — building a fully personalized sleep, meal, and light schedule so you arrive at your destination rested and ready.</p>
+    <div class="hero-actions">
+      <a href="#cta" class="btn-primary">Download free ↓</a>
+      <a href="#demo" class="btn-secondary">Try the demo →</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">94%</span><span class="stat-label">reduce jet lag</span></div>
+      <div class="stat"><span class="stat-num">50k+</span><span class="stat-label">travelers helped</span></div>
+      <div class="stat"><span class="stat-num">4.9★</span><span class="stat-label">app store rating</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="container">
+    <div class="reveal">
+      <p class="section-label">How it works</p>
+      <h2 class="section-title">From details to departure,<br>Circadia has you covered.</h2>
+      <p class="section-sub">Four simple steps from setup to landing refreshed on the other side of the world.</p>
+    </div>
+    <div class="steps reveal">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-icon">✈️</div>
+        <h3>Enter your flight</h3>
+        <p>Input your departure, arrival, timezone, layovers, and whether you plan to sleep on board.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-icon">🧬</div>
+        <h3>Build your profile</h3>
+        <p>Tell us your age, chronotype, medical conditions, and preferences. Our AI tailors everything to you.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-icon">🌙</div>
+        <h3>Get your plan</h3>
+        <p>Receive a full day-by-day schedule covering sleep windows, meals, melatonin, and light exposure.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-icon">🌅</div>
+        <h3>Arrive refreshed</h3>
+        <p>Follow your reminders, track your progress, and land with your body clock already synced.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="container">
+    <div class="reveal">
+      <p class="section-label">Features</p>
+      <h2 class="section-title">Everything your circadian<br>rhythm needs.</h2>
+      <p class="section-sub">Science-backed tools working together to give you the most personalized travel sleep plan possible.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card reveal">
+        <div class="feature-icon amber">🧠</div>
+        <h3>AI sleep scheduling</h3>
+        <p>Our algorithm calculates your exact sleep windows before, during, and after travel — down to the hour.</p>
+        <span class="feature-tag amber-tag">Core feature</span>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon teal">🦉</div>
+        <h3>Chronotype detection</h3>
+        <p>Night owl or early bird? Your natural chronotype dramatically changes your optimal adjustment strategy.</p>
+        <span class="feature-tag">Personalization</span>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon amber">✈️</div>
+        <h3>Flight tracking</h3>
+        <p>Enter any route, including layovers and red-eyes. Circadia accounts for every hour in transit.</p>
+        <span class="feature-tag amber-tag">Travel-first</span>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon teal">🍽️</div>
+        <h3>Meal timing</h3>
+        <p>When you eat is as important as when you sleep. Get meal windows that reinforce your circadian reset.</p>
+        <span class="feature-tag">Science-backed</span>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon amber">💊</div>
+        <h3>Melatonin guidance</h3>
+        <p>Precise timing and dosage recommendations based on your age, weight, and destination timezone.</p>
+        <span class="feature-tag amber-tag">Medical-aware</span>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon teal">🔬</div>
+        <h3>"Why this works" science</h3>
+        <p>Every recommendation comes with a plain-English explanation of the circadian biology behind it.</p>
+        <span class="feature-tag">Transparent AI</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INTERACTIVE DEMO -->
+<section id="demo">
+  <div class="container">
+    <div class="reveal">
+      <p class="section-label">Live demo</p>
+      <h2 class="section-title">Build your sleep plan<br>right now.</h2>
+      <p class="section-sub">Enter a few details and see how Circadia generates your personalized pre-travel schedule.</p>
+    </div>
+    <div class="demo-wrap reveal">
+      <div class="demo-form">
+        <div class="form-group">
+          <label>Your age</label>
+          <input type="number" id="dAge" placeholder="e.g. 32" min="5" max="90" value="28">
+        </div>
+        <div class="form-group">
+          <label>Chronotype</label>
+          <select id="dChronotype">
+            <option value="owl">Night owl 🦉</option>
+            <option value="lark" selected>Early bird 🐦</option>
+            <option value="neutral">In between</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Departure timezone</label>
+          <select id="dFrom">
+            <option value="-8">Pacific Time (UTC-8)</option>
+            <option value="-5" selected>Eastern Time (UTC-5)</option>
+            <option value="0">London (UTC+0)</option>
+            <option value="+1">Paris (UTC+1)</option>
+            <option value="+5.5">Mumbai (UTC+5:30)</option>
+            <option value="+8">Singapore (UTC+8)</option>
+            <option value="+9">Tokyo (UTC+9)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Destination timezone</label>
+          <select id="dTo">
+            <option value="-8">Pacific Time (UTC-8)</option>
+            <option value="-5">Eastern Time (UTC-5)</option>
+            <option value="0">London (UTC+0)</option>
+            <option value="+1">Paris (UTC+1)</option>
+            <option value="+5.5">Mumbai (UTC+5:30)</option>
+            <option value="+8" selected>Singapore (UTC+8)</option>
+            <option value="+9">Tokyo (UTC+9)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Sleep on flight?</label>
+          <select id="dSleep">
+            <option value="yes">Yes, I'll try to sleep</option>
+            <option value="no">No, staying awake</option>
+          </select>
+        </div>
+        <button class="btn-primary" onclick="generatePlan()" style="margin-top:0.5rem; justify-content:center;">
+          Generate my plan →
+        </button>
+      </div>
+      <div class="demo-result" id="demoResult">
+        <div class="result-header">
+          <h3>Your sleep plan</h3>
+          <div class="live-badge"><div class="live-dot"></div> AI ready</div>
+        </div>
+        <div class="result-empty" id="resultEmpty">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+            <circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="1.5" opacity="0.4"/>
+            <path d="M24 14 C18 14 14 18.5 14 24 C14 29.5 18 34 24 34" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+            <circle cx="24" cy="24" r="3" fill="currentColor" opacity="0.4"/>
+          </svg>
+          <p>Fill in your details and hit<br><strong style="color:var(--white)">Generate my plan</strong> to see your personalized schedule.</p>
+        </div>
+        <div class="schedule-list" id="scheduleList" style="display:none"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="container">
+    <div class="reveal" style="text-align:center; max-width:600px; margin:0 auto;">
+      <p class="section-label">Pricing</p>
+      <h2 class="section-title">Start free. Upgrade when you're ready.</h2>
+      <p class="section-sub" style="margin:0 auto;">No credit card needed to get started.</p>
+    </div>
+    <div class="pricing-grid reveal">
+      <div class="pricing-card">
+        <p class="plan-name">Free</p>
+        <p class="plan-price"><sup>$</sup>0</p>
+        <p class="plan-desc">Everything you need to tackle your next trip.</p>
+        <ul class="plan-features">
+          <li><span class="check">✓</span> AI sleep scheduling</li>
+          <li><span class="check">✓</span> Up to 3 flight trips</li>
+          <li><span class="check">✓</span> Meal timing guidance</li>
+          <li><span class="check">✓</span> Notification reminders</li>
+          <li><span class="check">✓</span> Offline access</li>
+          <li><span class="x">✕</span> Layover optimization</li>
+          <li><span class="x">✕</span> Sleep analytics</li>
+          <li><span class="x">✕</span> PDF export</li>
+        </ul>
+        <button class="plan-btn outline" onclick="alert('Download coming soon!')">Get started free</button>
+      </div>
+      <div class="pricing-card featured">
+        <div class="pricing-badge">Most popular</div>
+        <p class="plan-name">Pro</p>
+        <p class="plan-price"><sup>$</sup>20<span>/month</span></p>
+        <p class="plan-desc">For frequent travelers who want the full Circadia experience.</p>
+        <ul class="plan-features">
+          <li><span class="check">✓</span> Everything in Free</li>
+          <li><span class="check">✓</span> Unlimited flight tracking</li>
+          <li><span class="check">✓</span> Layover optimization</li>
+          <li><span class="check">✓</span> Deep sleep analytics</li>
+          <li><span class="check">✓</span> Pre-travel destination sync</li>
+          <li><span class="check">✓</span> PDF plan export</li>
+          <li><span class="check">✓</span> Melatonin dosage guide</li>
+          <li><span class="check">✓</span> Weekly circadian health score</li>
+        </ul>
+        <button class="plan-btn primary" onclick="alert('Pro signup coming soon!')">Start Pro free trial</button>
+      </div>
+      <div class="pricing-card">
+        <p class="plan-name">Corporate</p>
+        <p class="plan-price" style="font-size:1.8rem">Custom</p>
+        <p class="plan-desc">For businesses, airlines, and frequent traveler teams.</p>
+        <ul class="plan-features">
+          <li><span class="check">✓</span> Everything in Pro</li>
+          <li><span class="check">✓</span> Team dashboard</li>
+          <li><span class="check">✓</span> Flight crew optimization</li>
+          <li><span class="check">✓</span> SSO & admin controls</li>
+          <li><span class="check">✓</span> Dedicated support</li>
+          <li><span class="check">✓</span> API access</li>
+          <li><span class="check">✓</span> Custom integrations</li>
+          <li><span class="check">✓</span> Volume pricing</li>
+        </ul>
+        <button class="plan-btn outline" onclick="alert('Contact sales coming soon!')">Contact sales</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="container">
+    <div class="reveal">
+      <p class="section-label">Testimonials</p>
+      <h2 class="section-title">Travelers who sleep better.</h2>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card reveal">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">"I fly London to Tokyo four times a year and jet lag used to wreck my first three days. With Circadia I was functional by day one. The meal timing advice alone was a game-changer."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar" style="background:var(--amber-dim); color:var(--amber);">JH</div>
+          <div>
+            <p class="author-name">James H.</p>
+            <p class="author-role">Business traveler · London</p>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card reveal">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">"I was skeptical about the melatonin timing — it seemed too precise. But I followed it exactly and woke up on my first morning in Bali completely in sync. I've recommended this to everyone."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar" style="background:var(--teal-dim); color:var(--teal);">SR</div>
+          <div>
+            <p class="author-name">Sofia R.</p>
+            <p class="author-role">Vacationer · Toronto</p>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card reveal">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">"As a long-haul cabin crew member, circadian disruption is literally an occupational hazard. Circadia Pro has become the most important app on my phone. The weekly score keeps me honest."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar" style="background:rgba(167,139,250,0.15); color:#a78bfa;">MT</div>
+          <div>
+            <p class="author-name">Marco T.</p>
+            <p class="author-role">Flight crew · Dubai</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCIENCE -->
+<section id="science">
+  <div class="container">
+    <div class="reveal">
+      <p class="section-label">The science</p>
+      <h2 class="section-title">Built on chronobiology.<br>Not guesswork.</h2>
+      <p class="section-sub">Every recommendation Circadia makes is grounded in peer-reviewed circadian biology research.</p>
+    </div>
+    <div class="science-grid reveal">
+      <div class="science-facts">
+        <div class="science-fact">
+          <div class="fact-icon">☀️</div>
+          <div class="fact-content">
+            <h4>Light exposure is the master reset</h4>
+            <p>The suprachiasmatic nucleus responds to light more than any other signal. Circadia times your light and dark exposure to shift your clock faster.</p>
+          </div>
+        </div>
+        <div class="science-fact">
+          <div class="fact-icon amber">🍽️</div>
+          <div class="fact-content">
+            <h4>Peripheral clocks follow food timing</h4>
+            <p>Organs throughout your body keep their own time, and meal timing is their primary cue. Eating at the right hours accelerates your circadian adjustment.</p>
+          </div>
+        </div>
+        <div class="science-fact">
+          <div class="fact-icon">💊</div>
+          <div class="fact-content">
+            <h4>Melatonin timing beats dosage</h4>
+            <p>Research shows that when you take melatonin matters far more than how much. A precisely timed low dose outperforms a large random one.</p>
+          </div>
+        </div>
+        <div class="science-fact">
+          <div class="fact-icon amber">🦉</div>
+          <div class="fact-content">
+            <h4>Chronotype changes the entire strategy</h4>
+            <p>Night owls and early birds have different phase-shifting curves. The same flight requires a completely different schedule for each chronotype.</p>
+          </div>
+        </div>
+      </div>
+      <div class="science-visual">
+        <p style="font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--white-dim); margin-bottom:1.5rem;">24-hour circadian cycle</p>
+        <div class="circadian-clock">
+          <canvas id="clockCanvas" width="200" height="200"></canvas>
+        </div>
+        <p style="font-size:0.75rem; color:var(--white-dim); margin-top:1rem; line-height:1.6;">Your body clock runs on a precise ~24.2 hour cycle, governed by light, food, and temperature cues. Circadia uses all three.</p>
+        <div style="display:flex; gap:1rem; justify-content:center; margin-top:1rem; flex-wrap:wrap;">
+          <span style="font-size:0.75rem; color:var(--amber); display:flex; align-items:center; gap:4px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--amber);display:inline-block;"></span> Alert phase</span>
+          <span style="font-size:0.75rem; color:var(--teal); display:flex; align-items:center; gap:4px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--teal);display:inline-block;"></span> Sleep phase</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="container">
+    <div class="cta-inner reveal">
+      <p class="section-label" style="text-align:center;">Ready to sleep better?</p>
+      <h2>Your next trip starts<br>with better sleep.</h2>
+      <p>Download Circadia free — no credit card, no catch. Build your first sleep plan in under two minutes.</p>
+      <div class="hero-actions" style="justify-content:center;">
+        <a href="#" class="btn-primary">Download free ↓</a>
+        <a href="#pricing" class="btn-secondary">See Pro features</a>
+      </div>
+      <div class="store-badges">
+        <a href="#" class="store-badge">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+          <div><span style="font-size:0.65rem; display:block; opacity:0.6;">Download on the</span><strong>App Store</strong></div>
+        </a>
+        <a href="#" class="store-badge">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.76c.35.19.74.24 1.12.14l12.47-7.2-2.58-2.58-11.01 9.64zM20.7 10.06L17.52 8.2l-2.93 2.93 2.93 2.93 3.21-1.85c.91-.53.91-1.62-.03-2.15zM2.02 1.04C1.96 1.24 1.93 1.47 1.93 1.72v20.56c0 .25.03.48.09.68l.08.07 11.52-11.52v-.27L2.1.97l-.08.07z"/></svg>
+          <div><span style="font-size:0.65rem; display:block; opacity:0.6;">Get it on</span><strong>Google Play</strong></div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="#" class="nav-logo">Circa<span>dia</span></a>
+      <p>Your AI circadian rhythm coach. Travel far, sleep well, arrive ready.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Product</h4>
+      <ul>
+        <li><a href="#how">How it works</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#demo">Live demo</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Science</a></li>
+        <li><a href="#">Careers</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <ul>
+        <li><a href="#">Privacy</a></li>
+        <li><a href="#">Terms</a></li>
+        <li><a href="#">Medical disclaimer</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 Circadia. All rights reserved.</p>
+    <p>Not a substitute for medical advice.</p>
+  </div>
+</footer>
+
+<script>
+// Stars background
+(function() {
+  const bg = document.getElementById('heroBg');
+  for (let i = 0; i < 120; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 2.5 + 0.5;
+    s.style.cssText = `
+      width:${size}px; height:${size}px;
+      left:${Math.random()*100}%; top:${Math.random()*100}%;
+      --dur:${2 + Math.random()*5}s;
+      --delay:${Math.random()*4}s;
+    `;
+    bg.appendChild(s);
+  }
+  for (let i = 0; i < 4; i++) {
+    const r = document.createElement('div');
+    r.className = 'moon-arc';
+    const size = 200 + i * 160;
+    r.style.cssText = `
+      width:${size}px; height:${size}px;
+      left:50%; top:50%;
+      transform:translate(-50%,-50%);
+      animation-delay:${i*2}s;
+    `;
+    bg.appendChild(r);
+  }
+})();
+
+// Mobile menu
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => {
+  mobileMenu.classList.toggle('open');
+});
+function closeMobileMenu() { mobileMenu.classList.remove('open'); }
+
+// Scroll reveal
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), 80);
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+reveals.forEach(r => observer.observe(r));
+
+// Active nav on scroll
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 120) current = s.id;
+  });
+  navLinks.forEach(a => {
+    a.style.color = a.getAttribute('href') === '#'+current ? 'var(--white)' : '';
+  });
+});
+
+// Circadian clock canvas
+(function() {
+  const canvas = document.getElementById('clockCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const cx = 100, cy = 100, r = 80;
+  function draw() {
+    ctx.clearRect(0, 0, 200, 200);
+    ctx.strokeStyle = 'rgba(22,52,27,0.10)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx, cy, r*0.6, 0, Math.PI*2); ctx.stroke();
+
+    const now = new Date();
+    const hour = now.getHours() + now.getMinutes()/60;
+    const handAngle = (hour/24) * Math.PI*2 - Math.PI/2;
+    
+    // Sleep arc (10pm to 7am)
+    const sleepStart = (22/24)*Math.PI*2 - Math.PI/2;
+    const sleepEnd = (7/24)*Math.PI*2 - Math.PI/2;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r*0.85, sleepStart, sleepEnd + Math.PI*2);
+    ctx.strokeStyle = '#2E7D32';
+    ctx.lineWidth = 6;
+    ctx.lineCap = 'round';
+    ctx.stroke();
+
+    // Alert arc (8am to 9pm)
+    ctx.beginPath();
+    ctx.arc(cx, cy, r*0.85, (8/24)*Math.PI*2 - Math.PI/2, (21/24)*Math.PI*2 - Math.PI/2);
+    ctx.strokeStyle = '#E6B23A';
+    ctx.lineWidth = 6;
+    ctx.stroke();
+
+    // Hour markers
+    for (let h = 0; h < 24; h++) {
+      const a = (h/24)*Math.PI*2 - Math.PI/2;
+      const x1 = cx + Math.cos(a)*r*0.92;
+      const y1 = cy + Math.sin(a)*r*0.92;
+      const x2 = cx + Math.cos(a)*r*(h % 6 === 0 ? 0.75 : 0.83);
+      const y2 = cy + Math.sin(a)*r*(h % 6 === 0 ? 0.75 : 0.83);
+      ctx.beginPath();
+      ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
+      ctx.strokeStyle = h % 6 === 0 ? 'rgba(22,52,27,0.4)' : 'rgba(22,52,27,0.15)';
+      ctx.lineWidth = h % 6 === 0 ? 2 : 1;
+      ctx.stroke();
+    }
+
+    // Hand
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + Math.cos(handAngle)*r*0.55, cy + Math.sin(handAngle)*r*0.55);
+    ctx.strokeStyle = '#16341B';
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    ctx.stroke();
+    
+    ctx.beginPath();
+    ctx.arc(cx, cy, 4, 0, Math.PI*2);
+    ctx.fillStyle = '#3F7A2E';
+    ctx.fill();
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// Demo plan generator
+function generatePlan() {
+  const age = parseInt(document.getElementById('dAge').value) || 28;
+  const chronotype = document.getElementById('dChronotype').value;
+  const fromTz = parseFloat(document.getElementById('dFrom').value);
+  const toTz = parseFloat(document.getElementById('dTo').value);
+  const sleepOnFlight = document.getElementById('dSleep').value === 'yes';
+  const diff = Math.round(toTz - fromTz);
+  const absDiff = Math.abs(diff);
+  const direction = diff > 0 ? 'east' : 'west';
+  const empty = document.getElementById('resultEmpty');
+  const list = document.getElementById('scheduleList');
+  empty.style.display = 'none';
+  list.style.display = 'flex';
+  list.innerHTML = '';
+
+  let items = [];
+
+  if (absDiff === 0) {
+    items.push({ type:'sleep', time:'Tonight', desc:'No timezone shift — maintain your normal sleep schedule.', why:'No adjustment needed.' });
+  } else {
+    const isEarlyBird = chronotype === 'lark';
+    const isNightOwl = chronotype === 'owl';
+    const bedAdjust = direction === 'east' ? -1 : 1;
+    const baseHour = isEarlyBird ? 22 : isNightOwl ? 24 : 23;
+
+    items.push({
+      type: 'light',
+      time: direction === 'east' ? '7:00 AM' : '9:00 PM',
+      desc: direction === 'east'
+        ? 'Seek bright light in the morning — go outside or use a light therapy lamp for 30 minutes.'
+        : 'Dim all lights and avoid screens. Darkness signals your clock to shift later.',
+      why: `Light is the #1 circadian signal. ${direction === 'east' ? 'Morning light advances' : 'Evening darkness delays'} your body clock.`
+    });
+
+    const mealTime = direction === 'east' ? '6:30 AM' : '7:30 PM';
+    items.push({
+      type: 'meal',
+      time: mealTime,
+      desc: `Eat a ${direction === 'east' ? 'high-protein breakfast' : 'lighter dinner'} at your destination\'s local time — not your home time.`,
+      why: 'Peripheral clocks in your gut and liver use meal timing to sync independently of your brain clock.'
+    });
+
+    const melatoninHour = direction === 'east'
+      ? Math.max(20, baseHour - absDiff)
+      : Math.min(24, baseHour + 1);
+    items.push({
+      type: 'sleep',
+      time: `${melatoninHour > 12 ? melatoninHour - 12 : melatoninHour}:00 ${melatoninHour >= 12 ? 'PM' : 'AM'}`,
+      desc: `Take 0.5mg melatonin. ${age > 60 ? 'Lower dose recommended for your age group.' : ''}`,
+      why: 'Timed low-dose melatonin is more effective than higher doses taken at random.'
+    });
+
+    const sleepHour = baseHour + bedAdjust * Math.min(2, absDiff);
+    const sleepDisplay = sleepHour > 12 ? `${sleepHour - 12}:00 PM` : `${sleepHour}:00 AM`;
+    items.push({
+      type: 'sleep',
+      time: sleepDisplay,
+      desc: `Target sleep onset by ${sleepDisplay}. Shift by ~${Math.min(2, absDiff)} hour(s) toward your destination timezone tonight.`,
+      why: `Shifting your schedule ${Math.min(2, absDiff)} hour(s) per day is the optimal rate — faster causes worse disruption.`
+    });
+
+    if (sleepOnFlight) {
+      items.push({
+        type: 'sleep',
+        time: 'On flight',
+        desc: 'Sleep only during your destination\'s nighttime window. Use an eye mask and earplugs. Avoid alcohol.',
+        why: 'Strategic in-flight sleep aligned to destination time pre-shifts your circadian clock before landing.'
+      });
+    } else {
+      items.push({
+        type: 'light',
+        time: 'On flight',
+        desc: 'Stay awake using bright cabin lighting. Drink water every hour. Walk the aisle every 2 hours.',
+        why: 'Staying awake builds sleep pressure for your first night at the destination — aiding faster resynchronization.'
+      });
+    }
+  }
+
+  items.forEach(item => {
+    const el = document.createElement('div');
+    el.className = `schedule-item ${item.type}`;
+    el.innerHTML = `
+      <span class="schedule-time">${item.time}</span>
+      <div>
+        <p class="schedule-desc">${item.desc}</p>
+        <p class="schedule-why">Why: ${item.why}</p>
+      </div>
+    `;
+    list.appendChild(el);
+  });
+
+  const header = document.querySelector('.result-header h3');
+  header.textContent = absDiff === 0
+    ? 'No adjustment needed'
+    : `${absDiff}h ${direction}ward shift · ${Math.ceil(absDiff/1.5)} day recovery`;
+}
+
+generatePlan();
+</script>
+</body>
+</html>
